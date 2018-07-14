@@ -27,7 +27,8 @@ session = DBSession()
 @app.route('/')
 @app.route("/catalog")
 def showCatalog():
-    return render_template("catalog.html")
+    categories = session.query(Category).order_by(asc(Category._id))
+    return render_template("catalog.html", categories=categories)
 
 # Route to show a category
 @app.route("/catalog/<string:category_title>")
@@ -66,5 +67,3 @@ if __name__ == "__main__":
     app.secret_key = "super_duper_secret_key"
     app.debug = True
     app.run(host="0.0.0.0", port=8000)
-
-
