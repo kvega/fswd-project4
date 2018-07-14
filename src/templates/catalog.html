@@ -15,6 +15,11 @@
         <section class="items list">
             <div class="container">
                 <h2>Recent Items</h2>
+                {% for item in recent_items %}
+                    <div class="row">
+                        <h3>{{ item.title }}</h3>
+                    </div>
+                {% endfor %}
             </div>
         </section>
     </main>
