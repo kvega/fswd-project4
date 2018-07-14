@@ -3,7 +3,10 @@
 # Imports for Flask app
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 
-#TODO: Imports for SQLite DB connection
+# Imports for SQLite DB connection
+from sqlalchemy import create_engine, asc
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, Category, Item
 
 #TODO: Imports for login_session setup
 
@@ -11,7 +14,12 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 
 app = Flask(__name__)
 
-#TODO: Connect to DB and create DB session
+# Connect to DB and create DB session
+engine = create_engine("sqlite:///itemcatalog.db")
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 # URL routes
 
