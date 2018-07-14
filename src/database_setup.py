@@ -17,7 +17,7 @@ class Category(Base):
     __tablename__ = "category"
 
     _id = Column(Integer, primary_key=True)
-    title = Column(String(250), unique=True)
+    title = Column(String(250), unique=True, nullable=False)
 
     @property
     def serialize(self):
@@ -35,9 +35,10 @@ class Item(Base):
     __tablename__ = "item"
 
     _id = Column(Integer, primary_key=True)
-    title = Column(String(80), unique=True)
+    title = Column(String(80), unique=True, nullable=False)
     description = Column(String(250))
-    category_id = Column(Integer, ForeignKey("category._id"), unique=True)
+    category_id = Column(Integer, ForeignKey("category._id"), unique=True,
+            nullable=False)
     category = relationship(Category)
 
     @property
