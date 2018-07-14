@@ -45,7 +45,9 @@ def showCategory(category_title):
 # Route to show an item
 @app.route("/catalog/<string:category_title>/<string:item_title>")
 def showItem(category_title, item_title):
-    return "Item: This is where the Item Info will be displayed."
+    category = session.query(Category).filter_by(title=category_title).one()
+    item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+    return render_template("itemloggedout.html", item=item)
 
 # Route to create an item
 @app.route("/catalog/<string:category_title>/new")
