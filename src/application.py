@@ -27,7 +27,7 @@ session = DBSession()
 @app.route('/')
 @app.route("/catalog")
 def showCatalog():
-    return "Catalog: This is where the Categories will be displayed."
+    return render_template("catalog.html")
 
 # Route to show a category
 @app.route("/catalog/<string:category_title>")
