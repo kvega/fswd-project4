@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 # Imports for connecting to SQLite DB
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Item
 
@@ -36,5 +36,8 @@ def add_categories(categories):
         try:
             session.add(new_category)
             session.commit()
-        #TODO: implement error handling to catch IntegrityError
+        except exc.IntegrityError:
+            session.rollback()
 
+
+add_categories(CATEGORIES)
