@@ -5,6 +5,11 @@
         <section class="categories list">
             <div class="container">
                 <h2>Categories</h2>
+                {% for category in categories %}
+                    <div class="row">
+                        <h3>{{ category.title }}</h3>
+                    </div>
+                {% endfor %}
             </div>
         </section>
         <section class="items list">
