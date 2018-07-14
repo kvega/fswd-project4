@@ -29,6 +29,15 @@ CATEGORIES = [
         "Hockey"
         ]
 
+# List of items
+ITEMS = [
+        Item(category_id=1, title="Soccer Cleats", description="The shoes"),
+        Item(category_id=1, title="Jersey", description="The shirt"),
+        Item(category_id=2, title="Jersey", description="The shirt"),
+        Item(category_id=3, title="Bat", description="The bat"),
+        Item(category_id=5, title="Snowboard", description="The board")
+        ]
+
 # Add Categories to DB
 def add_categories(categories):
     for category in categories:
@@ -39,5 +48,15 @@ def add_categories(categories):
         except exc.IntegrityError:
             session.rollback()
 
+# Add Items to DB
+def add_items(items):
+    for item in items:
+        try:
+            session.add(item)
+            session.commit()
+        except exc.IntegrityError:
+            session.rollback()
+
 
 add_categories(CATEGORIES)
+add_items(ITEMS)

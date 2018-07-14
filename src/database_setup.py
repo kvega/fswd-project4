@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 # Imports for setup of SQLite DB
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -35,11 +35,11 @@ class Item(Base):
     __tablename__ = "item"
 
     _id = Column(Integer, primary_key=True)
-    title = Column(String(80), unique=True, nullable=False)
+    title = Column(String(80), nullable=False)
     description = Column(String(250))
-    category_id = Column(Integer, ForeignKey("category._id"), unique=True,
-            nullable=False)
+    category_id = Column(Integer, ForeignKey("category._id"), nullable=False)
     category = relationship(Category)
+    __table_args = (UniqueConstraint("title", "category_id", name="item_category_uc"))
 
     @property
     def serialize(self):
