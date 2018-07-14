@@ -7,14 +7,18 @@
                 <h2>Categories</h2>
                 {% for category in categories %}
                     <div class="row">
-                        <h3>{{ category.title }}</h3>
+                        <h3>
+                            <a href="{{ url_for('showCategory', category_title=category.title) }}">
+                                {{ category.title }}
+                            </a>
+                        </h3>
                     </div>
                 {% endfor %}
             </div>
         </section>
         <section class="items list">
             <div class="container">
-                <h2>Recent Items</h2>
+                <h2>Latest Items</h2>
                 {% for item in recent_items %}
                     <div class="row">
                         <h3>{{ item.title }}</h3>
