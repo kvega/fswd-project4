@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+    <main class="container">
+        <section class="delete">
+            <div class="container">
+                <h2>Delete Item</h2>
+                <p>Are you sure you want to delete "{{ item.title }}"?</p>
+                <input type="submit" name="confirm_delete" value="Delete">
+                <input type="submit" name="cancel_delete" value="Cancel">
+            </div>
+        </section>
+    </main>
+{% endblock %}

@@ -62,7 +62,9 @@ def editItem(category_title, item_title):
 # Route to delete an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/delete")
 def deleteItem(category_title, item_title):
-    return "Delete Item: This is where a user will be able to delete an item."
+    category = session.query(Category).filter_by(title=category_title).one()
+    item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+    return render_template("deleteitem.html", item=item)
 
 # Route to access Catalog JSON API
 @app.route("/catalog.json")
