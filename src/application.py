@@ -39,7 +39,7 @@ def showCategory(category_title):
     categories = session.query(Category).order_by(asc(Category._id)).all()
     category = session.query(Category).filter_by(title=category_title).one()
     items = session.query(Item).filter_by(category_id=category._id).all()
-    return render_template("categoryloggedout.html", categories=categories,
+    return render_template("categoryloggedin.html", categories=categories,
         category=category, items=items)
 
 # Route to show an item
