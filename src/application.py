@@ -47,7 +47,7 @@ def showCategory(category_title):
 def showItem(category_title, item_title):
     category = session.query(Category).filter_by(title=category_title).one()
     item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
-    return render_template("itemloggedin.html", item=item)
+    return render_template("itemloggedin.html", category=category, item=item)
 
 # Route to create an item
 @app.route("/catalog/<string:category_title>/new")
