@@ -7,7 +7,7 @@
         {% endblock %}
         <section class="items list">
             <h3>
-                <a href="#">Add Item</a>
+                <a href="{{url_for('createItem')}}">Add Item</a>
             </h3>
             <div class="container">
                 <h2>{{ category.title }} Items ({{ items|length }} items)</h2>
