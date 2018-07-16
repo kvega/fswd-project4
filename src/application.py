@@ -58,7 +58,10 @@ def createItem():
 # Route to update an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/edit")
 def editItem(category_title, item_title):
-    return "Edit Item: This is where a user will be able to update an item."
+    categories = session.query(Category).order_by(asc(Category._id)).all()
+    category = session.query(Category).filter_by(title=category_title).one()
+    item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+    return render_template("edititem.html", categories=categories, category=category, item=item)
 
 # Route to delete an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/delete")
