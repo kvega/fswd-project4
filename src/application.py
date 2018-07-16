@@ -50,9 +50,10 @@ def showItem(category_title, item_title):
     return render_template("itemloggedin.html", category=category, item=item)
 
 # Route to create an item
-@app.route("/catalog/<string:category_title>/new")
-def createItem(category_title):
-    return "New Item: This is where a user will be able to create an item."
+@app.route("/catalog/new")
+def createItem():
+    categories = session.query(Category).order_by(asc(Category._id)).all()
+    return render_template("newitem.html", categories=categories)
 
 # Route to update an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/edit")
