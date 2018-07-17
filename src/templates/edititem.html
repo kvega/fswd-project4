@@ -13,7 +13,7 @@
             <select name="category" id="category-select" class="form-control">
                     <option value="" disabled selected>{{ category.title }}</option>
                 {% for cat in categories %}
-                    <option value="{{ cat.title }}">{{ cat.title }}</option>
+                    <option value="{{ cat._id }}">{{ cat.title }}</option>
                 {% endfor %}    
             </select>
 

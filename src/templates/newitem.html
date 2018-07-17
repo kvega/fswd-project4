@@ -12,7 +12,7 @@
             <label for="category">Category:</label>
             <select name="category" id="category-select" class="form-control">
                 {% for category in categories %}
-                    <option value="{{ category.title }}">{{ category.title }}</option>
+                    <option value="{{ category._id }}">{{ category.title }}</option>
                 {% endfor %}    
             </select>
 
