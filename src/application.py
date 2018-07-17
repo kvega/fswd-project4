@@ -42,12 +42,14 @@ def showCategory(category_title):
     return render_template("categoryloggedin.html", categories=categories,
         category=category, items=items)
 
+
 # Route to show an item
 @app.route("/catalog/<string:category_title>/<string:item_title>")
 def showItem(category_title, item_title):
     category = session.query(Category).filter_by(title=category_title).one()
     item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
     return render_template("itemloggedin.html", category=category, item=item)
+
 
 # Route to create an item
 @app.route("/catalog/new", methods=['GET', 'POST'])
@@ -65,6 +67,7 @@ def createItem():
         return redirect(url_for('showCategory', category_title=categories[new_item.category_id-1].title))
     else: 
         return render_template("newitem.html", categories=categories)
+
 
 # Route to update an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/edit", methods=['GET', 'POST'])
@@ -89,6 +92,7 @@ def editItem(category_title, item_title):
     else:
         return render_template("edititem.html", categories=categories, category=category, item=edited_item)
 
+
 # Route to delete an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/delete", methods=['GET', 'POST'])
 def deleteItem(category_title, item_title):
@@ -101,6 +105,7 @@ def deleteItem(category_title, item_title):
         return redirect(url_for("showCategory", category_title=category_title))
     else: 
         return render_template("deleteitem.html", category_title=category_title, item=delete_item)
+
 
 # Route to access Catalog JSON API
 @app.route("/catalog.json")
