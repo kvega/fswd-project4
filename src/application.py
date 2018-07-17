@@ -50,18 +50,38 @@ def showItem(category_title, item_title):
     return render_template("itemloggedin.html", category=category, item=item)
 
 # Route to create an item
-@app.route("/catalog/new")
+@app.route("/catalog/new", methods=['GET', 'POST'])
 def createItem():
     categories = session.query(Category).order_by(asc(Category._id)).all()
-    return render_template("newitem.html", categories=categories)
+    if request.method == 'POST':
+        new_item = Item(title=request.form['title'], description=request.form['description'],
+            category_id=request.form['category'])
+        session.add(new_item)
+        session.commit()
+        flash("New item %s successfully created" % new_item.title)
+        return redirect(url_for('showCategory', category_title=categories[new_item.category_id-1].title))
+    else: 
+        return render_template("newitem.html", categories=categories)
 
 # Route to update an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/edit")
 def editItem(category_title, item_title):
     categories = session.query(Category).order_by(asc(Category._id)).all()
     category = session.query(Category).filter_by(title=category_title).one()
-    item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
-    return render_template("edititem.html", categories=categories, category=category, item=item)
+    edited_item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+    if request.method == 'POST':
+        if request.form['title']:
+            edited_item.title = request.form['title']
+        if request.form['description']:
+            edited_item.description = request.form['description']
+        if request.form['category']:
+            edited_item.category_id = request.form['category']
+        session.add(edited_item)
+        session.commit()
+        flash("Item successfully updated")
+        return redirect(url_for("showCategory", category_title=category_title))
+    else:
+        return render_template("edititem.html", categories=categories, category=category, item=item)
 
 # Route to delete an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/delete")
