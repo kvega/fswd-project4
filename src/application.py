@@ -90,11 +90,17 @@ def editItem(category_title, item_title):
         return render_template("edititem.html", categories=categories, category=category, item=edited_item)
 
 # Route to delete an item
-@app.route("/catalog/<string:category_title>/<string:item_title>/delete")
+@app.route("/catalog/<string:category_title>/<string:item_title>/delete", methods=['GET', 'POST'])
 def deleteItem(category_title, item_title):
     category = session.query(Category).filter_by(title=category_title).one()
-    item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
-    return render_template("deleteitem.html", item=item)
+    delete_item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+    if request.method == 'POST':
+        session.delete(delete_item)
+        session.commit()
+        flash('Item successfully deleted')
+        return redirect(url_for("showCategory", category_title=category_title))
+    else: 
+        return render_template("deleteitem.html", category_title=category_title, item=delete_item)
 
 # Route to access Catalog JSON API
 @app.route("/catalog.json")
