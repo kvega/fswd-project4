@@ -4,7 +4,7 @@
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 
 # Imports for SQLite DB connection
-from sqlalchemy import create_engine, asc, desc
+from sqlalchemy import create_engine, exc, asc, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Item
 
@@ -56,15 +56,18 @@ def createItem():
     if request.method == 'POST':
         new_item = Item(title=request.form['title'], description=request.form['description'],
             category_id=request.form['category'])
-        session.add(new_item)
-        session.commit()
+        try:
+            session.add(new_item)
+            session.commit()
+        except exc.IntegrityError:
+            session.rollback()
         flash("New item %s successfully created" % new_item.title)
         return redirect(url_for('showCategory', category_title=categories[new_item.category_id-1].title))
     else: 
         return render_template("newitem.html", categories=categories)
 
 # Route to update an item
-@app.route("/catalog/<string:category_title>/<string:item_title>/edit")
+@app.route("/catalog/<string:category_title>/<string:item_title>/edit", methods=['GET', 'POST'])
 def editItem(category_title, item_title):
     categories = session.query(Category).order_by(asc(Category._id)).all()
     category = session.query(Category).filter_by(title=category_title).one()
@@ -76,12 +79,15 @@ def editItem(category_title, item_title):
             edited_item.description = request.form['description']
         if request.form['category']:
             edited_item.category_id = request.form['category']
-        session.add(edited_item)
-        session.commit()
+        try:
+            session.add(edited_item)
+            session.commit()
+        except exc.IntegrityError:
+            session.rollback()
         flash("Item successfully updated")
         return redirect(url_for("showCategory", category_title=category_title))
     else:
-        return render_template("edititem.html", categories=categories, category=category, item=item)
+        return render_template("edititem.html", categories=categories, category=category, item=edited_item)
 
 # Route to delete an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/delete")
