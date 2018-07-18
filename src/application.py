@@ -9,6 +9,8 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Item
 
 #TODO: Imports for login_session setup
+from flask import session as login_session
+import random, string
 
 #TODO: Imports for OAuth setup
 
@@ -22,6 +24,13 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # URL routes
+
+# Create state token and store for future validation
+@app.route("/login")
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    login_session['state'] = state
+    return "The current session state is %s" % login_session['state']
 
 # Route to show the catalog
 @app.route('/')
