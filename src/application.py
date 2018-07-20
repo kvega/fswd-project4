@@ -225,7 +225,11 @@ def showCategory(category_title):
 def showItem(category_title, item_title):
     category = session.query(Category).filter_by(title=category_title).one()
     item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
-    return render_template("itemloggedin.html", category=category, item=item)
+    creator = getUserInfo(item.user_id)
+    if "username" not in login_session or creator._id != login_session["user_id"]:
+        return render_template("publicitem.html", category=category, item=item)
+    else:
+        return render_template("item.html", category=category, item=item)
 
 
 # Route to create an item
@@ -251,9 +255,13 @@ def createItem():
 # Route to update an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/edit", methods=['GET', 'POST'])
 def editItem(category_title, item_title):
+    if "username" not in login_session:
+        return redirect("/login")
     categories = session.query(Category).order_by(asc(Category._id)).all()
     category = session.query(Category).filter_by(title=category_title).one()
     edited_item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+    if edited_item.user_id != login_session["user_id"]:
+        return "<script>function authFunction() {alert('You are not authorized to edit this item. Please create your own item in order to delete.');}</script><body onload='authFunction()'>"
     if request.method == 'POST':
         if request.form['title']:
             edited_item.title = request.form['title']
