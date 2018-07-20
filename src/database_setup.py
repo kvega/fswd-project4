@@ -28,8 +28,6 @@ class Category(Base):
 
     _id = Column(Integer, primary_key=True)
     title = Column(String(250), unique=True, nullable=False)
-    user_id = Column(Integer, ForeignKey("user._id"))
-    user = relationship(User)
 
     @property
     def serialize(self):
