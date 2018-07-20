@@ -28,6 +28,8 @@ class Category(Base):
 
     _id = Column(Integer, primary_key=True)
     title = Column(String(250), unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("user._id"))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -50,6 +52,8 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey("category._id"), nullable=False)
     category = relationship(Category)
     __table_args = (UniqueConstraint("title", "category_id", name="item_category_uc"))
+    user_id = Column(Integer, ForeignKey("user._id"))
+    user = relationship(User)
 
     @property
     def serialize(self):
