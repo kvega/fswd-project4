@@ -158,7 +158,7 @@ def gdisconnect():
 @app.route('/')
 @app.route("/catalog")
 def showCatalog():
-    categories = session.query(Category).order_by(asc(Category._id))
+    categories = session.query(Category).order_by(asc(Category._id)).all()
     recent_items = session.query(Item).order_by(desc(Item._id)).limit(10).all()
     return render_template("catalog.html", categories=categories,
         recent_items=recent_items)
