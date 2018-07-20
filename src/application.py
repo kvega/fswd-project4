@@ -35,6 +35,7 @@ session = DBSession()
 # User Helper Functions
 
 def createUser(login_session):
+    session = DBSession()
     new_user = User(name=login_session["username"], email=login_session["email"],
         picture=login_session["picture"])
     try:
@@ -47,6 +48,15 @@ def createUser(login_session):
         user = session.query(User).filter_by(email=login_session["email"]).one()
         session.close()
         return user._id
+
+def getUserInfo(user_id):
+    session = DBSession()
+    try:
+        user = session.query(User).filter_by(_id=user_id).one()
+    except:
+        return None
+    finally:
+        return user
     
 
 # URL routes
