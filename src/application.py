@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 # Imports for SQLite DB connection
 from sqlalchemy import create_engine, exc, asc, desc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Category, Item
+from database_setup import Base, User, Category, Item
 
 # Imports for login_session setup
 from flask import session as login_session
@@ -31,6 +31,23 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+# User Helper Functions
+
+def createUser(login_session):
+    new_user = User(name=login_session["username"], email=login_session["email"],
+        picture=login_session["picture"])
+    try:
+        session.add(new_user)
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        user = session.query(User).filter_by(email=login_session["email"]).one()
+        session.close()
+        return user._id
+    
 
 # URL routes
 
