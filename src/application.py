@@ -41,11 +41,11 @@ def createUser(login_session):
     try:
         session.add(new_user)
         session.commit()
+        user = session.query(User).filter_by(email=login_session["email"]).one()
     except:
         session.rollback()
         raise
     finally:
-        user = session.query(User).filter_by(email=login_session["email"]).one()
         session.close()
         return user._id
 
@@ -56,7 +56,19 @@ def getUserInfo(user_id):
     except:
         return None
     finally:
+        session.close()
         return user
+
+
+def getUserId(email):
+    session = DBSession()
+    try:
+        user = session.query(User).filter_by(email=email).one()
+    except:
+        return None
+    finally:
+        session.close()
+        return user._id
     
 
 # URL routes
