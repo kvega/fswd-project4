@@ -26,7 +26,7 @@ CLIENT_ID = json.loads(
 app = Flask(__name__)
 
 # Connect to DB and create DB session
-engine = create_engine("sqlite:///itemcatalog.db", connect_args={"check_same_thread": False})
+engine = create_engine("sqlite:///itemcatalogwithusers.db", connect_args={"check_same_thread": False})
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
