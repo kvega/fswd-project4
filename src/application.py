@@ -64,11 +64,11 @@ def getUserId(email):
     session = DBSession()
     try:
         user = session.query(User).filter_by(email=email).one()
-    except:
-        return None
-    finally:
         session.close()
         return user._id
+    except:
+        return None
+        
     
 
 # URL routes
@@ -148,6 +148,12 @@ def gconnect():
     login_session["username"] = data["name"]
     login_session["picture"] = data["picture"]
     login_session["email"] = data["email"]
+
+    # Verify if user exists, if it doesn't create a new one
+    user_id = getUserId(login_session["email"])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session["user_id"] = user_id
 
     output = ''
     output += '<h1>Welcome, '
