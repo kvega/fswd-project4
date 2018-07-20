@@ -225,10 +225,12 @@ def showItem(category_title, item_title):
 # Route to create an item
 @app.route("/catalog/new", methods=['GET', 'POST'])
 def createItem():
+    if "username" not in login_session:
+        return redirect("/login")
     categories = session.query(Category).order_by(asc(Category._id)).all()
     if request.method == 'POST':
         new_item = Item(title=request.form['title'], description=request.form['description'],
-            category_id=request.form['category'])
+            category_id=request.form['category'], user_id=login_session["user_id"])
         try:
             session.add(new_item)
             session.commit()
