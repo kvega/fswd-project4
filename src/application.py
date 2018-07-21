@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 # Imports for SQLite DB connection
 from sqlalchemy import create_engine, exc, asc, desc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Category, Item
+from database_setup import Base, User, Category, Item
 
 # Imports for login_session setup
 from flask import session as login_session
@@ -26,11 +26,50 @@ CLIENT_ID = json.loads(
 app = Flask(__name__)
 
 # Connect to DB and create DB session
-engine = create_engine("sqlite:///itemcatalog.db", connect_args={"check_same_thread": False})
+engine = create_engine("sqlite:///itemcatalogwithusers.db", connect_args={"check_same_thread": False})
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+# User Helper Functions
+
+def createUser(login_session):
+    session = DBSession()
+    new_user = User(name=login_session["username"], email=login_session["email"],
+        picture=login_session["picture"])
+    try:
+        session.add(new_user)
+        session.commit()
+        user = session.query(User).filter_by(email=login_session["email"]).one()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+        return user._id
+
+def getUserInfo(user_id):
+    session = DBSession()
+    try:
+        user = session.query(User).filter_by(_id=user_id).one()
+    except:
+        return None
+    finally:
+        session.close()
+        return user
+
+
+def getUserId(email):
+    session = DBSession()
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        session.close()
+        return user._id
+    except:
+        return None
+        
+    
 
 # URL routes
 
@@ -110,6 +149,12 @@ def gconnect():
     login_session["picture"] = data["picture"]
     login_session["email"] = data["email"]
 
+    # Verify if user exists, if it doesn't create a new one
+    user_id = getUserId(login_session["email"])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session["user_id"] = user_id
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session["username"]
@@ -171,8 +216,10 @@ def showCategory(category_title):
     categories = session.query(Category).order_by(asc(Category._id)).all()
     category = session.query(Category).filter_by(title=category_title).one()
     items = session.query(Item).filter_by(category_id=category._id).all()
-    return render_template("categoryloggedin.html", categories=categories,
-        category=category, items=items)
+    if "username" not in login_session:
+        return render_template("publiccategory.html", categories=categories, category=category, items=items)
+    else:
+        return render_template("category.html", categories=categories, category=category, items=items)
 
 
 # Route to show an item
@@ -180,16 +227,22 @@ def showCategory(category_title):
 def showItem(category_title, item_title):
     category = session.query(Category).filter_by(title=category_title).one()
     item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
-    return render_template("itemloggedin.html", category=category, item=item)
+    creator = getUserInfo(item.user_id)
+    if "username" not in login_session or creator._id != login_session["user_id"]:
+        return render_template("publicitem.html", category=category, item=item)
+    else:
+        return render_template("item.html", category=category, item=item)
 
 
 # Route to create an item
 @app.route("/catalog/new", methods=['GET', 'POST'])
 def createItem():
+    if "username" not in login_session:
+        return redirect("/login")
     categories = session.query(Category).order_by(asc(Category._id)).all()
     if request.method == 'POST':
         new_item = Item(title=request.form['title'], description=request.form['description'],
-            category_id=request.form['category'])
+            category_id=request.form['category'], user_id=login_session["user_id"])
         try:
             session.add(new_item)
             session.commit()
@@ -204,9 +257,13 @@ def createItem():
 # Route to update an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/edit", methods=['GET', 'POST'])
 def editItem(category_title, item_title):
+    if "username" not in login_session:
+        return redirect("/login")
     categories = session.query(Category).order_by(asc(Category._id)).all()
     category = session.query(Category).filter_by(title=category_title).one()
     edited_item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+    if edited_item.user_id != login_session["user_id"]:
+        return "<script>function authFunction() {alert('You are not authorized to edit this item. Please create your own item in order to delete.');}</script><body onload='authFunction()'>"
     if request.method == 'POST':
         if request.form['title']:
             edited_item.title = request.form['title']
@@ -228,8 +285,12 @@ def editItem(category_title, item_title):
 # Route to delete an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/delete", methods=['GET', 'POST'])
 def deleteItem(category_title, item_title):
+    if "username" not in login_session:
+        return redirect("/login")
     category = session.query(Category).filter_by(title=category_title).one()
     delete_item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+    if delete_item.user_id != login_session["user_id"]:
+        return "<script>function authFunction() {alert('You are not authorized to edit this item. Please create your own item in order to delete.');}</script><body onload='authFunction()'>"
     if request.method == 'POST':
         session.delete(delete_item)
         session.commit()

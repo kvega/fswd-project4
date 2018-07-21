@@ -12,6 +12,16 @@ Base = declarative_base()
 # Create Classes
 #==============================================================================
 
+
+# User Class
+class User(Base):
+    __tablename__ = "user"
+
+    _id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False)
+    picture = Column(String(250))
+
 # Category class
 class Category(Base):
     __tablename__ = "category"
@@ -40,6 +50,8 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey("category._id"), nullable=False)
     category = relationship(Category)
     __table_args = (UniqueConstraint("title", "category_id", name="item_category_uc"))
+    user_id = Column(Integer, ForeignKey("user._id"))
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -54,6 +66,6 @@ class Item(Base):
             }
 
 
-engine = create_engine("sqlite:///itemcatalog.db")
+engine = create_engine("sqlite:///itemcatalogwithusers.db")
 
 Base.metadata.create_all(engine)
