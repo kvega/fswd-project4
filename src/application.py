@@ -306,6 +306,10 @@ def catalogJSON():
     return "Catalog JSON: JSON API endpoint to view Catalog information."
 
 
+@app.route("/test")
+def showTest():
+    return render_template("test.html")
+
 # Initialize Flask app
 if __name__ == "__main__":
     app.secret_key = "super_duper_secret_key"

@@ -2,3 +2,4 @@
 *.db
 *.bak
 .vscode/
+src/templates/test.html
