@@ -32,6 +32,9 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Create cache for categories to reduce redundant DB queries. Users are unable to modify categories
+CATEGORIES_CACHE = session.query(Category).order_by(asc(Category._id)).all()
+
 # User Helper Functions
 
 def createUser(login_session):
@@ -203,9 +206,8 @@ def gdisconnect():
 @app.route('/')
 @app.route("/catalog")
 def showCatalog():
-    categories = session.query(Category).order_by(asc(Category._id)).all()
     recent_items = session.query(Item).order_by(desc(Item._id)).limit(10).all()
-    return render_template("catalog.html", categories=categories,
+    return render_template("catalog.html", categories=CATEGORIES_CACHE,
         recent_items=recent_items)
 
 
