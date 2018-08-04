@@ -1,5 +1,19 @@
-<div class="topnav">
-    <h1><a class="home" href="/">Catalog App</a></h1>
-    <button class="button" type="button" name="login_button"><a href="/login">Login</a></button>
-</div>
-
+<header class="container header">
+    <div class="topnav navbar">
+        <a id="home" href="/">Catalog App</a>
+        <div class="dropdown">
+            <button class="dropbtn">
+                Categories
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                {% for category in categories %}
+                    <a href="{{ url_for('showCategory', category_title=category.title) }}">
+                        {{ category.title }}
+                    </a>
+                {% endfor%}
+            </div>
+        </div>
+        <a id="login" href="/login">Login</a>
+    </div>
+</header>
