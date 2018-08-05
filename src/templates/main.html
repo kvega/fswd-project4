@@ -4,12 +4,13 @@
         {% block head %}
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
         <title>Catalog App</title>
         {% endblock %}
     </head>
     <body>
-        <div id="header" class="container">{% block header %}{% endblock %}</div>
+        <div id="header" class="container">{% block header %}{% include "header.html" %}{% endblock %}</div>
         <div id="content" class="container">{% block content %}{% endblock %}</div>
     </body>
 </html>
