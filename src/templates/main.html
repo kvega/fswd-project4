@@ -11,6 +11,9 @@
     </head>
     <body>
         <div id="header" class="container">{% block header %}{% include "header.html" %}{% endblock %}</div>
-        <div id="content" class="container">{% block content %}{% endblock %}</div>
+        <div id="content" class="container">
+            <main class="container">
+                <div class="card">{% block content %}{% endblock %}</div>
+            </main>
     </body>
 </html>
