@@ -31,11 +31,11 @@ CATEGORIES = [
 
 # List of items
 ITEMS = [
-        Item(category_id=1, title="Soccer Cleats", description="The shoes"),
-        Item(category_id=1, title="Jersey", description="The shirt"),
-        Item(category_id=2, title="Jersey", description="The shirt"),
-        Item(category_id=3, title="Bat", description="The bat"),
-        Item(category_id=5, title="Snowboard", description="The board")
+        Item(category_id=1, title="Soccer Cleats", description="The shoes", user_id=1),
+        Item(category_id=1, title="Jersey", description="The shirt", user_id=1),
+        Item(category_id=2, title="Jersey", description="The shirt", user_id=1),
+        Item(category_id=3, title="Bat", description="The bat", user_id=2),
+        Item(category_id=5, title="Snowboard", description="The board", user_id=2)
         ]
 
 # Add Categories to DB
@@ -59,4 +59,4 @@ def add_items(items):
 
 
 add_categories(CATEGORIES)
-# add_items(ITEMS)
+add_items(ITEMS)
