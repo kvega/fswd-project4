@@ -1,19 +1,17 @@
 {% extends "main.html" %}
 {% block content %}
-    <main class="container">
-        <section class="categories list">
-            <div class="container">
-                <h2>{{ item.title }}</h2>
-                <p>{{ item.description }}</p>
-                <div class="row">
-                    <span>
-                        <a href="{{url_for('editItem', category_title=category.title, item_title=item.title)}}">Edit</a>
-                    </span>
-                    <span>
-                        <a href="{{url_for('deleteItem', category_title=category.title, item_title=item.title)}}">Delete</a>
-                    </span>
-                </div>
-            </div>
-        </section>
-    </main>
+<section>
+    <div class="container">
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.description }}</p>
+        <div class="row">
+            <span>
+                <a href="{{url_for('editItem', category_title=category.title, item_title=item.title)}}">Edit</a>
+            </span>
+            <span>
+                <a href="{{url_for('deleteItem', category_title=category.title, item_title=item.title)}}">Delete</a>
+            </span>
+        </div>
+    </div>
+</section>
 {% endblock %}

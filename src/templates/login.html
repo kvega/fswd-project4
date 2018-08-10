@@ -1,16 +1,16 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-        <script src="https://apis.google.com/js/client:platform.js?onload=start"></script>
-        <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
-    </head>
+{% extends "main.html" %}
+{% block title %}- Login{% endblock %}
+{% block head %}
+    {{ super() }}
+    <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/client:platform.js?onload=start"></script>
+    <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+{% endblock %}
 
-    <body>
-
-        <h1>Hello</h1>
-        <div id="signinButton">
+{% block content %}
+    <h1>Login</h1>
+    <div id="signinButton">
             <button class="g-signin"
                 data-scope="openid email"
                 data-clientid="315217216831-h1h89eubu8q2k2728bdehkplj2obtoo6.apps.googleusercontent.com"
@@ -19,18 +19,18 @@
                 data-cookiepolicy="single_host_origin"
                 data-callback="signInCallback"
                 data-approvalprompt="force"> <!-- remove this when the app is finished-->
-        </button>
+            </button>
         </div>
-
+    
         <div id="result"></div>
-
+    
         <script>
             function signInCallback(authResult) {
                 if (authResult['code']) {
                     
                     // Hide the sign-in button now that the user is authorized
                     //$("#signinButton").attr("style", "display: none");
-
+    
                     // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect
                     $.ajax({
                         type: 'POST',
@@ -56,8 +56,5 @@
             }
         </script>
 
-    <!--END GOOGLE PLUS SIGN IN -->
-
-    </body>
-
-</html>
+        <!--END GOOGLE PLUS SIGN IN -->
+{% endblock %}
