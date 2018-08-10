@@ -1,28 +1,21 @@
 {% extends "main.html" %}
 {% block content %}
-    <main class="container">
-        <div class="card">
-            {% block categories %}
-            {% include "categories.html" %}
-            {% endblock %}
-            <section class="items list">
-                <div class="container">
-                    <h2>Latest Items</h2>
-                    <h3>
-                        <a href="{{url_for('createItem')}}">Add Item</a>
-                    </h3>
-                    {% for item in recent_items %}
-                        <div class="row">
-                            <h3>
-                                <a href="{{url_for('showItem', category_title=categories[item.category_id-1].title, item_title=item.title)}}">
-                                    {{ item.title }}
-                                </a>
-                                <span> ({{ categories[item.category_id-1].title}}) </span>
-                            </h3>
-                        </div>
-                    {% endfor %}
-                </div>
-            </section>
-        </div>
-    </main>
+<section class="items list">
+    <div class="container">
+        <h2>Latest Items</h2>
+        <h3>
+            <a href="{{url_for('createItem')}}">Add Item</a>
+        </h3>
+        {% for item in recent_items %}
+            <div class="row">
+                <h3>
+                    <a href="{{url_for('showItem', category_title=categories[item.category_id-1].title, item_title=item.title)}}">
+                        {{ item.title }}
+                    </a>
+                    <span> ({{ categories[item.category_id-1].title}}) </span>
+                </h3>
+            </div>
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}
