@@ -88,6 +88,11 @@ header .topnav a:hover {
 #login {
     float: right;
     font-size: 28px;
+    padding: 6px 10px;
+    margin: 8px 0;
+    background-color: lightsalmon;
+    font-size: 24px;
+    color: white;
 }
 
 main {
