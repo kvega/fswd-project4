@@ -178,7 +178,8 @@ def gdisconnect():
         print "Access Token is None"
         response = make_response(json.dumps("Current user not connected"), 401)
         response.headers['Content-Type'] = "application/json"
-        return response
+        print response
+        return redirect(url_for('showCatalog'))
     print "In gdisconnect access token is %s" % access_token
     print "User name is: " 
     print login_session["username"]
@@ -197,11 +198,13 @@ def gdisconnect():
         del login_session["picture"]
         response = make_response(json.dumps("Successfully disconnected."), 200)
         response.headers['Content-type'] = "application/json"
-        return response
+        print response
+        return redirect(url_for('showCatalog'))
     else:
         response = make_response(json.dumps("Failed to revoke token for given user."), 400)
         response.headers['Content-Type'] = "application/json"
-        return response
+        print response
+        return redirect(url_for('showCatalog'))
 
 
 # Route to show the catalog
