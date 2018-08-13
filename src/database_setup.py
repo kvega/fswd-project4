@@ -50,7 +50,7 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey("category._id"), nullable=False)
     category = relationship(Category)
     __table_args = (UniqueConstraint("title", "category_id", name="item_category_uc"))
-    user_id = Column(Integer, ForeignKey("user._id"))
+    user_id = Column(Integer, ForeignKey("user._id"), nullable=False)
     user = relationship(User)
 
     @property

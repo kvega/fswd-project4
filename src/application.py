@@ -32,6 +32,9 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Create cache for categories to reduce redundant DB queries. Users are unable to modify categories
+CATEGORIES_CACHE = session.query(Category).order_by(asc(Category._id)).all()
+
 # User Helper Functions
 
 def createUser(login_session):
@@ -179,7 +182,8 @@ def gdisconnect():
     print "In gdisconnect access token is %s" % access_token
     print "User name is: " 
     print login_session["username"]
-    url = "https://accounts.google.com/o/oauth2/revoke?token=%s" % login_session["access_token"]
+    url = "https://accounts.google.com/o/oauth2/revoke?token=%s" % access_token
+    print url
     h = httplib2.Http()
     print h
     result = h.request(url, 'GET')[0]
@@ -204,23 +208,22 @@ def gdisconnect():
 @app.route('/')
 @app.route("/catalog")
 def showCatalog():
-    categories = session.query(Category).order_by(asc(Category._id)).all()
     recent_items = session.query(Item).order_by(desc(Item._id)).limit(10).all()
-    return render_template("catalog.html", categories=categories,
-        recent_items=recent_items)
+    return render_template("catalog.html", categories=CATEGORIES_CACHE,
+        recent_items=recent_items, session=login_session)
+    
 
 
 # Route to show a category
 @app.route("/catalog/<string:category_title>")
 @app.route("/catalog/<string:category_title>/items")
 def showCategory(category_title):
-    categories = session.query(Category).order_by(asc(Category._id)).all()
     category = session.query(Category).filter_by(title=category_title).one()
     items = session.query(Item).filter_by(category_id=category._id).all()
     if "username" not in login_session:
-        return render_template("publiccategory.html", categories=categories, category=category, items=items)
+        return render_template("publiccategory.html", categories=CATEGORIES_CACHE, category=category, items=items, session=login_session)
     else:
-        return render_template("category.html", categories=categories, category=category, items=items)
+        return render_template("category.html", categories=CATEGORIES_CACHE, category=category, items=items, session=login_session)
 
 
 # Route to show an item
@@ -230,9 +233,9 @@ def showItem(category_title, item_title):
     item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
     creator = getUserInfo(item.user_id)
     if "username" not in login_session or creator._id != login_session["user_id"]:
-        return render_template("publicitem.html", category=category, item=item)
+        return render_template("publicitem.html", categories=CATEGORIES_CACHE, category=category, item=item, session=login_session)
     else:
-        return render_template("item.html", category=category, item=item)
+        return render_template("item.html", categories=CATEGORIES_CACHE, category=category, item=item, session=login_session)
 
 
 # Route to create an item
@@ -240,7 +243,6 @@ def showItem(category_title, item_title):
 def createItem():
     if "username" not in login_session:
         return redirect("/login")
-    categories = session.query(Category).order_by(asc(Category._id)).all()
     if request.method == 'POST':
         new_item = Item(title=request.form['title'], description=request.form['description'],
             category_id=request.form['category'], user_id=login_session["user_id"])
@@ -250,9 +252,9 @@ def createItem():
         except exc.IntegrityError:
             session.rollback()
         flash("New item %s successfully created" % new_item.title)
-        return redirect(url_for('showCategory', category_title=categories[new_item.category_id-1].title))
+        return redirect(url_for('showCategory', category_title=CATEGORIES_CACHE[new_item.category_id-1].title))
     else: 
-        return render_template("newitem.html", categories=categories)
+        return render_template("newitem.html", categories=CATEGORIES_CACHE, session=login_session)
 
 
 # Route to update an item
@@ -260,7 +262,6 @@ def createItem():
 def editItem(category_title, item_title):
     if "username" not in login_session:
         return redirect("/login")
-    categories = session.query(Category).order_by(asc(Category._id)).all()
     category = session.query(Category).filter_by(title=category_title).one()
     edited_item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
     if edited_item.user_id != login_session["user_id"]:
@@ -280,7 +281,7 @@ def editItem(category_title, item_title):
         flash("Item successfully updated")
         return redirect(url_for("showCategory", category_title=category_title))
     else:
-        return render_template("edititem.html", categories=categories, category=category, item=edited_item)
+        return render_template("edititem.html", categories=CATEGORIES_CACHE, category=category, item=edited_item, session=login_session)
 
 
 # Route to delete an item
@@ -298,7 +299,7 @@ def deleteItem(category_title, item_title):
         flash('Item successfully deleted')
         return redirect(url_for("showCategory", category_title=category_title))
     else: 
-        return render_template("deleteitem.html", category_title=category_title, item=delete_item)
+        return render_template("deleteitem.html", category_title=category_title, item=delete_item, session=login_session)
 
 
 # Route to access Catalog JSON API
@@ -306,6 +307,11 @@ def deleteItem(category_title, item_title):
 def catalogJSON():
     return "Catalog JSON: JSON API endpoint to view Catalog information."
 
+
+@app.route("/test")
+def showTest():
+    recent_items = session.query(Item).order_by(desc(Item._id)).limit(10).all()
+    return render_template("test.html", categories=CATEGORIES_CACHE, recent_items=recent_items)
 
 # Initialize Flask app
 if __name__ == "__main__":

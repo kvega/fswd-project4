@@ -1,12 +1,10 @@
 {% extends "main.html" %}
+{% block title%} - {{ item.title}} {% endblock %}
 {% block content %}
-{% include "header.html" %}
-    <main class="container">
-        <section class="categories list">
-            <div class="container">
-                <h2>{{ item.title }}</h2>
-                <p>{{ item.description }}</p>
-            </div>
-        </section>
-    </main>
+<section>
+    <div class="container">
+        <h2>{{ item.title }}</h2>
+        <p>{{ item.description }}</p>
+    </div>
+</section> 
 {% endblock %}
