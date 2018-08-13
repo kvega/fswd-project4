@@ -209,7 +209,8 @@ def gdisconnect():
 def showCatalog():
     recent_items = session.query(Item).order_by(desc(Item._id)).limit(10).all()
     return render_template("catalog.html", categories=CATEGORIES_CACHE,
-        recent_items=recent_items)
+        recent_items=recent_items, session=login_session)
+    
 
 
 # Route to show a category
@@ -219,9 +220,9 @@ def showCategory(category_title):
     category = session.query(Category).filter_by(title=category_title).one()
     items = session.query(Item).filter_by(category_id=category._id).all()
     if "username" not in login_session:
-        return render_template("publiccategory.html", categories=CATEGORIES_CACHE, category=category, items=items)
+        return render_template("publiccategory.html", categories=CATEGORIES_CACHE, category=category, items=items, session=login_session)
     else:
-        return render_template("category.html", categories=CATEGORIES_CACHE, category=category, items=items)
+        return render_template("category.html", categories=CATEGORIES_CACHE, category=category, items=items, session=login_session)
 
 
 # Route to show an item
@@ -231,9 +232,9 @@ def showItem(category_title, item_title):
     item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
     creator = getUserInfo(item.user_id)
     if "username" not in login_session or creator._id != login_session["user_id"]:
-        return render_template("publicitem.html", categories=CATEGORIES_CACHE, category=category, item=item)
+        return render_template("publicitem.html", categories=CATEGORIES_CACHE, category=category, item=item, session=login_session)
     else:
-        return render_template("item.html", categories=CATEGORIES_CACHE, category=category, item=item)
+        return render_template("item.html", categories=CATEGORIES_CACHE, category=category, item=item, session=login_session)
 
 
 # Route to create an item
@@ -252,7 +253,7 @@ def createItem():
         flash("New item %s successfully created" % new_item.title)
         return redirect(url_for('showCategory', category_title=CATEGORIES_CACHE[new_item.category_id-1].title))
     else: 
-        return render_template("newitem.html", categories=CATEGORIES_CACHE)
+        return render_template("newitem.html", categories=CATEGORIES_CACHE, session=login_session)
 
 
 # Route to update an item
@@ -279,7 +280,7 @@ def editItem(category_title, item_title):
         flash("Item successfully updated")
         return redirect(url_for("showCategory", category_title=category_title))
     else:
-        return render_template("edititem.html", categories=CATEGORIES_CACHE, category=category, item=edited_item)
+        return render_template("edititem.html", categories=CATEGORIES_CACHE, category=category, item=edited_item, session=login_session)
 
 
 # Route to delete an item
@@ -297,7 +298,7 @@ def deleteItem(category_title, item_title):
         flash('Item successfully deleted')
         return redirect(url_for("showCategory", category_title=category_title))
     else: 
-        return render_template("deleteitem.html", category_title=category_title, item=delete_item)
+        return render_template("deleteitem.html", category_title=category_title, item=delete_item, session=login_session)
 
 
 # Route to access Catalog JSON API
