@@ -308,7 +308,12 @@ def deleteItem(category_title, item_title):
 # Route to access Catalog JSON API
 @app.route("/catalog.json")
 def catalogJSON():
-    return "Catalog JSON: JSON API endpoint to view Catalog information."
+    cs = [c.serialize for c in CATEGORIES_CACHE]
+    for c in cs:
+        items = session.query(Item).filter_by(category_id=c["_id"]).all()
+        if items:
+            c["items"] = [i.serialize for i in items]
+    return jsonify(Categories=cs)
 
 
 @app.route("/test")
