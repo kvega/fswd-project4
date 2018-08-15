@@ -13,7 +13,11 @@
         <select name="category" id="category-select" class="form-control">
                 <option value="" disabled selected>{{ category.title }}</option>
             {% for cat in categories %}
-                <option value="{{ cat._id }}">{{ cat.title }}</option>
+                {% if cat._id == category._id %}
+                    <option value="{{ cat._id }}" selected="selected">{{ cat.title }}</option>
+                {% else %}
+                    <option value="{{ cat._id }}">{{ cat.title }}</option>
+                {% endif %}
             {% endfor %}    
         </select>
 

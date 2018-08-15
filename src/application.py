@@ -12,7 +12,7 @@ from database_setup import Base, User, Category, Item
 from flask import session as login_session
 import random, string
 
-#TODO: Imports for OAuth setup
+# Imports for OAuth setup
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
