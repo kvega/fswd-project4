@@ -1,19 +1,17 @@
 {% extends "main.html" %}
 {% block title %} - {{ category.title }} {% endblock %}
+{% block header %}
+<div class="header-text">{{ category.title }} Items ({{ items|length }} items)</div>
+<div><a id="add-item" href="{{url_for('createItem')}}">Add Item</a></div>
+{% endblock %}
 {% block content %}
 <section>
-    <h3>
-        <a href="{{url_for('createItem')}}">Add Item</a>
-    </h3>
-    <div class="container">
-        <h2>{{ category.title }} Items ({{ items|length }} items)</h2>
+    <div class="section-container">
         {% for item in items %}
             <div class="row">
-                <h3>
-                    <a href="{{url_for('showItem', category_title=category.title, item_title=item.title)}}">
-                        {{ item.title }}
-                    </a>
-                </h3>
+                <a href="{{url_for('showItem', category_title=category.title, item_title=item.title)}}">
+                    {{ item.title }}
+                </a>
             </div>
         {% endfor %}
     </div>
