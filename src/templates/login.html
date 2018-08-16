@@ -12,7 +12,7 @@
             width: 50%;
         }
 
-        #result, #result * {
+        #result {
             margin: 0 auto;
         }
     </style>
@@ -52,11 +52,12 @@
                     success: function(result) {
                         // Handle or verify the server response if necessary
                         if (result) {
-                            $(".header-text").html("Login Successful!")
-                            $("#result").html("</br>" + result + "</br>Redirecting...")
+                            $(".header-text").html("Login Successful!");
+                            console.log(result);
+                            $("#result").html("</br>" + result + "</br>Redirecting...");
                             setTimeout(function() {
                                 window.location.href = "/catalog";
-                            }, 30000);
+                            }, 4000);
                         } else if (authResult["error"]) {
                             console.log("There was an error! " + authResult["error"]);
                         } else {
