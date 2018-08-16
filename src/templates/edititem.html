@@ -1,5 +1,8 @@
 {% extends "main.html" %}
 {% block title %} - Edit {{ item.title }} {% endblock %}
+{% block header %}
+<div class="header-text">Edit Item</div>
+{% endblock %}
 {% block content %}
 <form action="{{url_for('editItem', category_title=category.title, item_title=item.title)}}" method="POST">
     <div class="form-group">
