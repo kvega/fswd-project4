@@ -1,7 +1,9 @@
 {% extends "main.html" %}
 {% block title %} - New Item {% endblock %}
+{% block header %}
+<div class="header-text">New Item</div>
+{% endblock %}
 {% block content %}
-<h1>New Item</h1>
 <form action="{{url_for('createItem')}}" method="POST">
     <div class="form-group">
         <label for="title">Title:</label>
