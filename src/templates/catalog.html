@@ -1,19 +1,17 @@
 {% extends "main.html" %}
+{% block header %}
+<div class="header-text">Latest Items</div>
+<div><a id="add-item" href="{{url_for('createItem')}}">Add Item</a></div>
+{% endblock %}
 {% block content %}
 <section>
-    <div class="container">
-        <h2>Latest Items</h2>
-        <h3>
-            <a href="{{url_for('createItem')}}">Add Item</a>
-        </h3>
+    <div class="section-container">       
         {% for item in recent_items %}
             <div class="row">
-                <h3>
                     <a href="{{url_for('showItem', category_title=categories[item.category_id-1].title, item_title=item.title)}}">
                         {{ item.title }}
                     </a>
                     <span> ({{ categories[item.category_id-1].title}}) </span>
-                </h3>
             </div>
         {% endfor %}
     </div>
