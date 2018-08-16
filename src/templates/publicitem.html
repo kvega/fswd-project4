@@ -1,9 +1,11 @@
 {% extends "main.html" %}
 {% block title%} - {{ item.title}} {% endblock %}
+{% block header %}
+<div class="header-text">{{ item.title }}</div>
+{% endblock %}
 {% block content %}
 <section>
-    <div class="container">
-        <h2>{{ item.title }}</h2>
+    <div class="section-container">
         <p>{{ item.description }}</p>
     </div>
 </section> 
