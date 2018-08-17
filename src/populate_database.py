@@ -62,6 +62,7 @@ def add_items(items):
         except exc.IntegrityError:
             session.rollback()
 
+# Add Users to DB
 def add_users(users):
     for user in users:
         try:
