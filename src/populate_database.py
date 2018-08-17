@@ -3,7 +3,7 @@
 # Imports for connecting to SQLite DB
 from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Category, Item
+from database_setup import Base, Category, Item, User
 
 # Connect to DB
 DBNAME = "sqlite:///itemcatalogwithusers.db"
@@ -34,9 +34,14 @@ ITEMS = [
         Item(category_id=1, title="Soccer Cleats", description="The shoes", user_id=1),
         Item(category_id=1, title="Jersey", description="The shirt", user_id=1),
         Item(category_id=2, title="Jersey", description="The shirt", user_id=1),
-        Item(category_id=3, title="Bat", description="The bat", user_id=2),
-        Item(category_id=5, title="Snowboard", description="The board", user_id=2)
+        Item(category_id=3, title="Bat", description="The bat", user_id=1),
+        Item(category_id=5, title="Snowboard", description="The board", user_id=1)
         ]
+
+# List of users
+USERS = [
+    User(name="John Doe", email="johndoe@example.com")
+]
 
 # Add Categories to DB
 def add_categories(categories):
@@ -57,6 +62,14 @@ def add_items(items):
         except exc.IntegrityError:
             session.rollback()
 
+def add_users(users):
+    for user in users:
+        try:
+            session.add(user)
+            session.commit()
+        except exc.IntegrityError:
+            session.rollback()
 
 add_categories(CATEGORIES)
 add_items(ITEMS)
+add_users(USERS)
