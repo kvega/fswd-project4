@@ -2,6 +2,7 @@
 
 # Imports for Flask app
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from functools import wraps
 
 # Imports for SQLite DB connection
 from sqlalchemy import create_engine, exc, asc, desc
@@ -205,6 +206,15 @@ def gdisconnect():
         response.headers['Content-Type'] = "application/json"
         print response
         return redirect(url_for('showCatalog'))
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "username" not in login_session:
+            return redirect("/login")
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 # Route to show the catalog
