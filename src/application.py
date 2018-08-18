@@ -312,31 +312,50 @@ def deleteItem(category_title, item_title):
         return render_template("deleteitem.html", category_title=category_title, item=delete_item, session=login_session)
 
 
+def valid_json(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        print requests.get(request.url).status_code, "this is the status code"
+        if requests.get(request.url).status_code != 200:
+            return jsonify({"error": str(*args) + " is not a valid request"})
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 # Route to access Catalog JSON API
-@app.route("/catalog.json")
+@app.route("/json/catalog")
+@valid_json
 def catalogJSON():
-    cs = [c.serialize for c in CATEGORIES_CACHE]
-    for c in cs:
-        items = session.query(Item).filter_by(category_id=c["_id"]).all()
-        if items:
-            c["items"] = [i.serialize for i in items]
-    return jsonify(Categories=cs)
+    try:
+        cs = [c.serialize for c in CATEGORIES_CACHE]
+        for c in cs:
+            items = session.query(Item).filter_by(category_id=c["_id"]).all()
+            if items:
+                c["items"] = [i.serialize for i in items]
+        return jsonify(Categories=cs)
+    except:
+        return jsonify({"error": "Not a valid request"})
 
 
 # Route to access Category JSON API
-@app.route("/catalog/<string:category_title>.json")
+@app.route("/json/<string:category_title>")
 def categoryJSON(category_title):
-    category = session.query(Category).filter_by(title=category_title).one()
-    items = session.query(Item).filter_by(category_id=category._id).all()
-    return jsonify(Category=[i.serialize for i in items])
-
+    try:
+        category = session.query(Category).filter_by(title=category_title).one()
+        items = session.query(Item).filter_by(category_id=category._id).all()
+        return jsonify(Category=[i.serialize for i in items])
+    except:
+        return jsonify({"error": str(category_title) + "/" + " is not a valid request"})
 
 # Route to access Item JSON API
-@app.route("/catalog/<string:category_title>/<string:item_title>.json")
+@app.route("/json/<string:category_title>/<string:item_title>")
 def itemJSON(category_title, item_title):
-    category = session.query(Category).filter_by(title=category_title).one()
-    item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
-    return jsonify(Item=item.serialize)
+    try:
+        category = session.query(Category).filter_by(title=category_title).one()
+        item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+        return jsonify(Item=item.serialize)
+    except:
+        return jsonify({"error": str(category_title) + "/" + str(item_title) + " is not a valid request"})
 
 
 # Initialize Flask app
