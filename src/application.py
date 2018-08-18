@@ -207,7 +207,7 @@ def gdisconnect():
         print response
         return redirect(url_for('showCatalog'))
 
-
+# Decorator for requiring user to be logged in 
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -253,9 +253,8 @@ def showItem(category_title, item_title):
 
 # Route to create an item
 @app.route("/catalog/new", methods=['GET', 'POST'])
+@login_required
 def createItem():
-    if "username" not in login_session:
-        return redirect("/login")
     if request.method == 'POST':
         new_item = Item(title=request.form['title'], description=request.form['description'],
             category_id=request.form['category'], user_id=login_session["user_id"])
@@ -272,9 +271,8 @@ def createItem():
 
 # Route to update an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/edit", methods=['GET', 'POST'])
+@login_required
 def editItem(category_title, item_title):
-    if "username" not in login_session:
-        return redirect("/login")
     category = session.query(Category).filter_by(title=category_title).one()
     edited_item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
     if edited_item.user_id != login_session["user_id"]:
@@ -299,9 +297,8 @@ def editItem(category_title, item_title):
 
 # Route to delete an item
 @app.route("/catalog/<string:category_title>/<string:item_title>/delete", methods=['GET', 'POST'])
+@login_required
 def deleteItem(category_title, item_title):
-    if "username" not in login_session:
-        return redirect("/login")
     category = session.query(Category).filter_by(title=category_title).one()
     delete_item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
     if delete_item.user_id != login_session["user_id"]:
@@ -324,6 +321,15 @@ def catalogJSON():
         if items:
             c["items"] = [i.serialize for i in items]
     return jsonify(Categories=cs)
+
+
+# Route to access Item JSON API
+@app.route("/catalog/<string:category_title>/<string:item_title>.json")
+def catalogItem(category_title, item_title):
+    category = session.query(Category).filter_by(title=category_title).one()
+    item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
+    return jsonify(item.serialize)
+
 
 # Initialize Flask app
 if __name__ == "__main__":
