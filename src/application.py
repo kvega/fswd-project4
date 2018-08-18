@@ -312,19 +312,8 @@ def deleteItem(category_title, item_title):
         return render_template("deleteitem.html", category_title=category_title, item=delete_item, session=login_session)
 
 
-def valid_json(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        print requests.get(request.url).status_code, "this is the status code"
-        if requests.get(request.url).status_code != 200:
-            return jsonify({"error": str(*args) + " is not a valid request"})
-        return f(*args, **kwargs)
-    return decorated_function
-
-
 # Route to access Catalog JSON API
 @app.route("/json/catalog")
-@valid_json
 def catalogJSON():
     try:
         cs = [c.serialize for c in CATEGORIES_CACHE]
