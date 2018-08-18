@@ -315,12 +315,6 @@ def catalogJSON():
             c["items"] = [i.serialize for i in items]
     return jsonify(Categories=cs)
 
-
-@app.route("/test")
-def showTest():
-    recent_items = session.query(Item).order_by(desc(Item._id)).limit(10).all()
-    return render_template("test.html", categories=CATEGORIES_CACHE, recent_items=recent_items)
-
 # Initialize Flask app
 if __name__ == "__main__":
     app.secret_key = "super_duper_secret_key"
