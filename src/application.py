@@ -336,7 +336,7 @@ def categoryJSON(category_title):
 def itemJSON(category_title, item_title):
     category = session.query(Category).filter_by(title=category_title).one()
     item = session.query(Item).filter_by(category_id=category._id, title=item_title).one()
-    return jsonify(item.serialize)
+    return jsonify(Item=item.serialize)
 
 
 # Initialize Flask app
