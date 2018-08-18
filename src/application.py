@@ -323,6 +323,14 @@ def catalogJSON():
     return jsonify(Categories=cs)
 
 
+# Route to access Category JSON API
+@app.route("/catalog/<string:category_title>.json")
+def categoryJSON(category_title):
+    category = session.query(Category).filter_by(title=category_title).one()
+    items = session.query(Item).filter_by(category_id=category._id).all()
+    return jsonify(Category=[i.serialize for i in items])
+
+
 # Route to access Item JSON API
 @app.route("/catalog/<string:category_title>/<string:item_title>.json")
 def catalogItem(category_title, item_title):
