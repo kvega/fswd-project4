@@ -137,6 +137,14 @@ main div.row a:hover {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, .5);
 }
 
+.section-container p {
+    width: 80%;
+    margin: 0 auto;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+}
 
 main input[type=text], select {
     width: 100%;
