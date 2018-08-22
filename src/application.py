@@ -256,8 +256,13 @@ def showItem(category_title, item_title):
 @login_required
 def createItem():
     if request.method == 'POST':
-        new_item = Item(title=request.form['title'], description=request.form['description'],
-            category_id=request.form['category'], user_id=login_session["user_id"])
+        if request.form['title']:
+            title = request.form['title']
+        if request.form['description']:
+            description = request.form['description']
+        if request.form['category']:
+            category = request.form['category']
+        new_item = Item(title=title, description=description, category_id=category, user_id=login_session["user_id"])
         try:
             session.add(new_item)
             session.commit()
