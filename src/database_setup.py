@@ -8,9 +8,9 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
-#==============================================================================
+# ==============================================================================
 # Create Classes
-#==============================================================================
+# ==============================================================================
 
 
 # User Class
@@ -23,6 +23,8 @@ class User(Base):
     picture = Column(String(250))
 
 # Category class
+
+
 class Category(Base):
     __tablename__ = "category"
 
@@ -35,9 +37,9 @@ class Category(Base):
         Return object data in serializeable format.
         """
         return {
-                "_id"  : self._id,
-                "title" : self.title 
-            }
+            "_id": self._id,
+            "title": self.title
+        }
 
 
 # Item class
@@ -49,7 +51,11 @@ class Item(Base):
     description = Column(String(250))
     category_id = Column(Integer, ForeignKey("category._id"), nullable=False)
     category = relationship(Category)
-    __table_args = (UniqueConstraint("title", "category_id", name="item_category_uc"))
+    __table_args = (
+        UniqueConstraint(
+            "title",
+            "category_id",
+            name="item_category_uc"))
     user_id = Column(Integer, ForeignKey("user._id"), nullable=False)
     user = relationship(User)
 
@@ -59,11 +65,11 @@ class Item(Base):
         Return object data in serializeable format.
         """
         return {
-                "cat_id": self.category_id,
-                "_id" : self._id,
-                "title" : self.title,
-                "description" : self.description
-            }
+            "cat_id": self.category_id,
+            "_id": self._id,
+            "title": self.title,
+            "description": self.description
+        }
 
 
 engine = create_engine("sqlite:///itemcatalogwithusers.db")

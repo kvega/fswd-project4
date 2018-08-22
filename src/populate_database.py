@@ -18,25 +18,29 @@ session = DBSession()
 
 # Create list of categories
 CATEGORIES = [
-        "Soccer",
-        "Basketball",
-        "Baseball",
-        "Frisbee",
-        "Snowboarding",
-        "Rock Climbing",
-        "Foosball",
-        "Skating",
-        "Hockey"
-        ]
+    "Soccer",
+    "Basketball",
+    "Baseball",
+    "Frisbee",
+    "Snowboarding",
+    "Rock Climbing",
+    "Foosball",
+    "Skating",
+    "Hockey"
+]
 
 # List of items
 ITEMS = [
-        Item(category_id=1, title="Soccer Cleats", description="The shoes", user_id=1),
-        Item(category_id=1, title="Jersey", description="The shirt", user_id=1),
-        Item(category_id=2, title="Jersey", description="The shirt", user_id=1),
-        Item(category_id=3, title="Bat", description="The bat", user_id=1),
-        Item(category_id=5, title="Snowboard", description="The board", user_id=1)
-        ]
+    Item(
+        category_id=1,
+        title="Soccer Cleats",
+        description="The shoes",
+        user_id=1),
+    Item(category_id=1, title="Jersey", description="The shirt", user_id=1),
+    Item(category_id=2, title="Jersey", description="The shirt", user_id=1),
+    Item(category_id=3, title="Bat", description="The bat", user_id=1),
+    Item(category_id=5, title="Snowboard", description="The board", user_id=1)
+]
 
 # List of users
 USERS = [
@@ -44,6 +48,8 @@ USERS = [
 ]
 
 # Add Categories to DB
+
+
 def add_categories(categories):
     for category in categories:
         new_category = Category(title=category)
@@ -54,6 +60,8 @@ def add_categories(categories):
             session.rollback()
 
 # Add Items to DB
+
+
 def add_items(items):
     for item in items:
         try:
@@ -63,6 +71,8 @@ def add_items(items):
             session.rollback()
 
 # Add Users to DB
+
+
 def add_users(users):
     for user in users:
         try:
@@ -70,6 +80,7 @@ def add_users(users):
             session.commit()
         except exc.IntegrityError:
             session.rollback()
+
 
 add_categories(CATEGORIES)
 add_items(ITEMS)
