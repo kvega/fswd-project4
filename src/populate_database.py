@@ -6,15 +6,11 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Item, User
 
 # Connect to DB
-DBNAME = "sqlite:///itemcatalogwithusers.db"
+DBNAME = "postgresql://catalog:catalog@localhost/catalog"
 
 engine = create_engine(DBNAME)
 
 Base.metadata.bind = engine
-
-# Create DB session instance
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
 
 # Create list of categories
 CATEGORIES = [
@@ -51,6 +47,8 @@ USERS = [
 
 
 def add_categories(categories):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
     for category in categories:
         new_category = Category(title=category)
         try:
@@ -63,6 +61,8 @@ def add_categories(categories):
 
 
 def add_items(items):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
     for item in items:
         try:
             session.add(item)
@@ -74,6 +74,8 @@ def add_items(items):
 
 
 def add_users(users):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
     for user in users:
         try:
             session.add(user)
