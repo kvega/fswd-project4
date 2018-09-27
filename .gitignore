@@ -3,3 +3,4 @@
 *.bak
 .vscode/
 src/templates/test.html
+venv/
