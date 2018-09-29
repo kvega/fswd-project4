@@ -421,6 +421,4 @@ def itemJSON(category_title, item_title):
 
 # Initialize Flask app
 if __name__ == "__main__":
-    app.secret_key = "super_duper_secret_key"
-    app.debug = True
-    app.run(host="0.0.0.0", port=8000)
+    app.run()
